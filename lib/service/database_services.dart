@@ -40,4 +40,18 @@ class DatabaseServices {
       print("@AddUser $e");
     }
   }
+
+  deletedUser(User user) async{
+    Dio dio = Dio();
+    try{
+      print(user.id);
+      Response response = await dio.delete("$basePoint/crud/${user.id}");
+      print(response);
+      if(response != null){
+        return response;
+      }
+    }catch(e){
+      print("@Delete User $e");
+    }
+  }
 }

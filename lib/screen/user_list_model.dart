@@ -39,4 +39,30 @@ class UserListModel extends ChangeNotifier{
     }
     notifyListeners();
   }
+
+  deleteUser(User userDetail) async{
+    try{
+      response = await _dbServices.deletedUser(userDetail);
+      if(response != null){
+        print(userDetail);
+        userList.remove(userDetail);
+      }
+    }catch(e){
+      print("exception in delete $e");
+    }
+    notifyListeners();
+  }
+
+  updateUser(User userDetail) async{
+    try{
+      response = await _dbServices.deletedUser(userDetail);
+      if(response != null){
+        print(userDetail);
+        userList.remove(userDetail);
+      }
+    }catch(e){
+      print("exception in delete $e");
+    }
+    notifyListeners();
+  }
 }

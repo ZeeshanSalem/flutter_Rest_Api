@@ -17,7 +17,13 @@ class UserList extends StatelessWidget {
                       child: Column(
                         children:[
 
-                      ...model.userList.map<Widget>((e) => UserTile(user: e,)).toList(),
+                      ...model.userList.map<Widget>((e) => UserTile(
+                        onDelete: () async{
+//                          model.user.id = e.id;
+                          await model.deleteUser(e);
+                        },
+                        user: e,
+                      )).toList(),
 
                           SizedBox(height: 10,),
 
@@ -52,12 +58,12 @@ class UserList extends StatelessWidget {
                                             ),
 
                                             InputTextField(
-                                              controller: TextEditingController(text: model.user.avatar),
+                                              controller: TextEditingController(text: model.user.name),
                                               labelText: "name",
                                               hintText: "zeeshan",
 //                                        icon: "assets/static_assets/profile_icon.png",
                                               onChange: (String val) {
-                                                model.user.avatar = val;
+                                                model.user.name = val;
                                               },
                                               validator: (String val) {
                                                 if (val == null || val.length < 1) {
@@ -115,7 +121,9 @@ class UserList extends StatelessWidget {
 
 class UserTile extends StatelessWidget {
   User user;
-  UserTile({this.user});
+  final onDelete;
+  UserTile({this.user, this.onDelete});
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -133,7 +141,10 @@ class UserTile extends StatelessWidget {
         ),
         title: Text(user.id ??'Two-line ListTile'),
         subtitle: Text(user.name ??'Here is a second line'),
-        trailing: Icon(Icons.more_vert),
+        trailing: IconButton(
+          onPressed: onDelete,
+          icon: Icon(Icons.delete),
+        ),
       ),
     );
   }
