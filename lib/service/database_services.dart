@@ -27,11 +27,30 @@ class DatabaseServices {
     }
   }
 
-  addUser(User user) async{
+  addUser(User user, path) async{
+    Dio dio = Dio();
+    print(path);
+    try{
+      FormData formData = new FormData.fromMap({
+        "image": await MultipartFile.fromFile(path.path),
+        "data": user.toJson(),
+      });
+      Response response = await dio.post("$basePoint/crud",
+      data: formData);
+      print(response);
+      if(response != null){
+        return response;
+      }
+    }catch(e){
+      print("@AddUser $e");
+    }
+  }
+
+  updateUser(User user) async{
     Dio dio = Dio();
     try{
-      Response response = await dio.post("$basePoint/crud",
-      data: user.toJson());
+      Response response = await dio.put("$basePoint/crud/${user.id}",
+          data: user.toJson());
       print(response);
       if(response != null){
         return response;

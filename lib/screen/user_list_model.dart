@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rest_api/service/database_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../user_model.dart';
 
@@ -10,6 +13,9 @@ class UserListModel extends ChangeNotifier{
   final _dbServices = DatabaseServices();
  bool isLoading = true;
  Response response;
+ PickedFile pickFile;
+  File image;
+
   UserListModel(){
     getUser();
   }
@@ -26,10 +32,25 @@ class UserListModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  getImageFromGallery() async {
+    isLoading = true;
+    final pickedImage =
+    await ImagePicker().getImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      pickFile = pickedImage;
+      isLoading = false;
+      print("path $image");
+      notifyListeners();
+//      return true;
+    } else {
+      print(image);
+    }
+  }
+
   addUser() async{
 
     try{
-      response = await _dbServices.addUser(user);
+      response = await _dbServices.addUser(user, pickFile);
       if(response != null){
         userList.add(user);
 
@@ -55,10 +76,10 @@ class UserListModel extends ChangeNotifier{
 
   updateUser(User userDetail) async{
     try{
-      response = await _dbServices.deletedUser(userDetail);
+      response = await _dbServices.updateUser(userDetail);
       if(response != null){
         print(userDetail);
-        userList.remove(userDetail);
+//        userList.(userDetail);
       }
     }catch(e){
       print("exception in delete $e");
